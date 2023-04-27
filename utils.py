@@ -12,9 +12,9 @@ def train(model, train_loader, optimizer, device):
     for x in train_loader:
         img = torch.from_numpy(x.img)
         coord = torch.from_numpy(x.coord)
+        img, coord = img.type(torch.float32), coord.type(torch.float32)
         loss = model.loss(img.to(device),coord.to(device))
         optimizer.zero_grad()
-
         loss['loss'].backward()
 
         # Gradient clippling
@@ -34,6 +34,7 @@ def eval_loss(model, data_loader, device):
         for x in data_loader:
             img = torch.from_numpy(x.img)
             coord = torch.from_numpy(x.coord)
+            img, coord = img.type(torch.float32), coord.type(torch.float32)
             loss = model.loss(img.to(device), coord.to(device))
             eval_losses.append(loss['loss'].item() * img.shape[0])
             batch_sizes.append(img.shape[0])
